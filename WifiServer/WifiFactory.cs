@@ -2,11 +2,11 @@
 {
     public static class WifiFactory
     {
-        private static WifiConnectionContext db;
+        private static WifiConnectionContext _db;
 
         public static WifiConnectionContext GetContext()
         {
-            return db ?? (db = new WifiConnectionContext());
+            return _db ?? (_db = new WifiConnectionContext());
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.WebSockets;
+using Newtonsoft.Json;
 using WifiServer.Models;
 
 namespace WifiServer
@@ -38,8 +39,13 @@ namespace WifiServer
                 else
                 {
                     var payloadData = (receivedDataBuffer.Array ?? throw new InvalidOperationException()).Where(b => b != 0).ToArray();
-                    var receiveString = System.Text.Encoding.UTF8.GetString(payloadData, 0, payloadData.Length);
+                    var receivedString = System.Text.Encoding.UTF8.GetString(payloadData, 0, payloadData.Length);
+                    if (String.IsNullOrEmpty(receivedString)) return;
                     //Write to db
+                    var data = JsonConvert.DeserializeObject<WifiConnection>(receivedString);
+                    var context = WifiFactory.GetContext();
+                    context.WifiConnections.Add(data);
+                    context.SaveChanges();
                 }
             }
         }
